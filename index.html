@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+   <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" type="text/css" href="node_modules/bootsrtap.min.css"/>
+   <link rel="stylesheet" type="text/css" href="style.css">
+
+  <title></title>
+</head>
+<body ng-app="store" ng-controller="StoreController as store">
+
+<!-- from app modules, this will display on the page-->
+<!-- hide product if its set to true, meaning its sold out -->
+<div ng-hide="store.product.soldOut" ng-repeat="product in store.products">
+
+<!-- for some reason the product-template doesnt want to load -->
+  <product-title></product-title>
+    <p>{{product.description}}</p>
+
+
+
+                                          <!-- IMAGES -->
+<!-- below it will show inly when tehre ar emages in the array. so with .length we can confirm if there is anything in he array -->
+
+  <div class="galery" ng-show="product.images.length">
+  <!-- <img ng-src="{{product.images[0].full}}">  -->
+
+  <li class="picture" ng-repeat="image in product.images">
+  <img ng-src="{{image}}">
+
+  <button ng-show="product.canPurcahse">Add to cart</button>
+  <!-- show button when can purcahse is true -->
+  <!-- only show when the value of it is true -->
+
+
+
+             
+                                         <!-- PANELS -->
+    <!-- <product-panels></product-panels> instead of all the code below -->
+  <section ng-controller="PanelController as panel">
+    <ul class="nav nav-pills">
+
+      <li ng-class="{active: panel.isSet(1)}">
+        <a href ng-click="panel.setTab(1)">Description</a>
+      </li>
+
+      <li ng-class="{active: panel.isSet(2)}">
+        <a href ng-click="panel.setTab(2)">Specifications</a>
+      </li>
+
+      <li ng-class="{active: panel.isSet(3)}">
+        <a href ng-click="panel.setTab(3)">Reviews</a>
+      </li>
+    </ul>
+
+
+<!-- will show the div according to which tab panel will be active, clicked -->
+    <div class="panel" ng-show="panel.isSet(1)">
+      <h4>Description</h4>
+      <p>{{product.description}}</p>
+    </div>
+
+    <div class="panel" ng-show="panel.isSet(2)">
+      <h4>Specifications</h4>
+      <p>{{product.specifications}}</p>
+    </div>
+
+
+                                          <!-- REVIEWS -->
+  <!-- ng-model binds the form element value to property, bind {{}} with values -->
+  <!-- bc review has 3 properties so 3 ng-model -->
+
+    <div class="panel" ng-show="panel.isSet(3)">
+      <h4>Reviews</h4>
+
+<!-- display current reviews -->
+        <blockquote ng-repeat="review in product.reviews">
+          <b>Stars: {{review.stars}}</b>
+           {{review.body}}
+           <cite>by: {{review.author}}</cite>
+        </blockquote>
+      
+
+
+                                          <!-- REVIEW FORM -->
+<!-- pass in current product that we are reviewing -->
+<!-- ng-submit will apply for the entire form -->
+<!-- if form is not valid then the addReview method wont be called -->
+<!-- angular has build in function classes for ng-valid and ng-invalid, ng- pristine, ng-dirty and email validation -->
+
+      <form name="reviewForm" ng-controller="ReviewController as reviewCtrl"
+                              ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)" novalidate>
+
+    <!-- live preview                       -->
+        <blockquote>
+          <b>Stars: {{reviewCtrl.review.stars}}</b>
+           {{reviewCtrl.review.body}}
+           <cite class="clearFix">-- {{reviewCtrl.review.author}}</cite>
+        </blockquote>
+
+<!-- review form -->
+    <h4>Submit a Review</h4>
+
+      <fieldset class="form-group">
+        <select ng-model="reviewCtrl.review.stars" required>
+          <option value="1">1 star</option>
+          <option value="2">2 stars</option>
+        </select>
+      </fieldset>
+
+      <fieldset class="form-group">
+        <textarea ng-model="reviewCtrl.review.body" required></textarea>
+      </fieldset>
+
+      <fieldset class="form-group">
+        <input ng-model="reviewCtrl.review.author" type="email" required>
+      </fieldset>  
+
+      <fieldset class="form-group">
+        <input type="submit" value="Submit">
+      </fieldset>
+
+      <div>reviewForm is {{reviewForm.$valid}}</div>
+      </form>
+
+
+    </div>
+  </section>
+</div>
+
+
+
+
+<!-- <input type="checkbox" ng-model="review.terms">I agree to the terms<br>
+
+what color would you like: <br>
+<input type="radio" value="red" ng-model="review.color"> Red
+<input type="radio" value="blue" ng-model="review.color"> Blue
+<input type="radio" value="yellow" ng-model="review.color"> Yellow
+<br><br>
+
+other built in validations<br>
+<input type="email" name="email"><br>
+<input type="url" name="homepage"><br>
+<input type="number" name="quantity">
+ -->
+
+<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src='product.js'></script>
+</body>
+</html>
